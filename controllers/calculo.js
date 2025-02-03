@@ -29,11 +29,12 @@ const calculateRoute = (req, res) => {
             return res.status(404).json({ error: 'Rota não encontrada' });
         }
 
-        // Resultado com acidentes e porcentagem random
+        const descricaoProduto = rotaEncontrada['Desrição_Produto'];
         const acidentes = rotaEncontrada['Quantidade'] || 0;
         const porcentagemRisco = Math.floor(Math.random() * 100) + 1; // 1 a 100%
 
         return res.status(200).json({
+            descricaoProduto,
             acidentes,
             porcentagemRisco
         });

@@ -2,6 +2,18 @@ const xlsx = require('xlsx');
 const path = require('path');
 
 
+const removeDuplicates = (array) => {
+    const seen = new Set();
+    return array.filter(item => {
+        const key = item.codigo;  
+        if (seen.has(key)) {
+            return false;
+        } else {
+            seen.add(key);
+            return true;
+        }
+    });
+};
 
 const readProduto = (req, res) => {
     try {
@@ -11,13 +23,12 @@ const readProduto = (req, res) => {
         const sheet = workbook.Sheets[sheetName];
         const data = xlsx.utils.sheet_to_json(sheet);
 
-    
-        const produtos = data.map(row => ({
+        // Mapeamento e remoção de duplicados
+        let produtos = data.map(row => ({
             codigo: row['Código_Produto'],
             descricao: row['Desrição_Produto']
         }));
-        console.log(data);
-        
+        produtos = removeDuplicates(produtos);
 
         res.status(200).json({ produtos });
     } catch (error) {
@@ -25,7 +36,5 @@ const readProduto = (req, res) => {
         res.status(500).json({ error: 'Erro ao processar a planilha' });
     }
 };
-
-
 
 module.exports = { readProduto };
